@@ -26,4 +26,4 @@ Users should be able to:
 
 ### Screenshot
 
-![](./screenshot.jpg)
+![image](https://github.com/aveandrian/todo-app-react/assets/13519212/9701f2d7-57e8-4068-9404-d24fa639f56a)
