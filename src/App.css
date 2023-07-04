@@ -5,15 +5,10 @@
   font-family: 'Josefin Sans', sans-serif;
 }
 
-
-
-
-
-
-
 [data-theme='light'] {
   --bg-url: url('/images/bg-desktop-light.jpg');
   --bg-color: hsl(0, 0%, 98%);
+  --todo-item-bg : white;
   --divider: hsl(236, 33%, 92%);
   --compelted-text: hsl(233, 11%, 84%);
   --text-secondary: hsl(236, 9%, 61%);
@@ -21,14 +16,14 @@
 }
 
 [data-theme='dark'] {
-  --bg-url: url('/images/bg-desktop-dark.jpg')
-  /* - Very Dark Blue: hsl(235, 21%, 11%)
-- Very Dark Desaturated Blue: hsl(235, 24%, 19%)
-- Light Grayish Blue: hsl(234, 39%, 85%)
-- Light Grayish Blue (hover): hsl(236, 33%, 92%)
-- Dark Grayish Blue: hsl(234, 11%, 52%)
-- Very Dark Grayish Blue: hsl(233, 14%, 35%)
-- Very Dark Grayish Blue: hsl(237, 14%, 26%) */
+  --bg-url: url('/images/bg-desktop-dark.jpg');
+  --bg-color: hsl(235, 21%, 11%);
+  --todo-item-bg : hsl(235, 24%, 19%);
+  --text-main: hsl(234, 39%, 85%);
+  --text-main-hover: hsl(236, 33%, 92%);
+  --divider: hsl(237, 14%, 26%);
+  --text-secondary: hsl(234, 11%, 52%);
+  --compelted-text: hsl(233, 14%, 35%);
 }
 
 body, #root {
@@ -36,18 +31,18 @@ body, #root {
   width: 100%;
   display: flex;
   flex-direction: column;
-  background: var( --bg-color);
 }
 
 main {
+  background: var( --bg-color);
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
+  min-height: 100vh;
   height: fit-content;
-  
-  margin-bottom: 5vh;
+  padding: 2vh;
 }
 
 .bg-main {
@@ -65,7 +60,7 @@ main {
   z-index: 1;
   align-self: center;
   justify-self: center;
-  width: 550px;
+  width: 34.375rem;
   margin-top: 8vh;
   margin-bottom: 5vh;
 }
@@ -94,19 +89,20 @@ main {
   display: flex;
   align-items: center;
   width: 100%;
-  min-height: 60px;
+  min-height: 3.75rem;
   height: fit-content;
-  background-color: white;
-  border-radius: 5px;
+  background-color: var(--todo-item-bg);
+  border-radius: 0.313rem;
   margin-bottom: 3vh;
+
 }
 
 .circle {
-  margin-inline: 20px;
-  width: 30px;
-  height: 30px;
+  margin-inline: 1.25rem;
+  width: 1.875rem;
+  height: 1.875rem;
   border-radius: 50%;
-  border: 1px solid var(--divider);
+  border: 0.063rem solid var(--divider);
 }
 
 
@@ -120,8 +116,9 @@ main {
   flex: 1;
   height: 100%;
   border: none;
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--text-main);
+  background-color: var(--todo-item-bg);
 }
 
 .new-todo-input::placeholder {
@@ -136,28 +133,41 @@ main {
   display: none;
 }
 
+.todo-list {
+  position: relative;
+  background-color: var( --todo-item-bg);
+  border-radius: 0.313rem 0.313rem 0 0 ; 
+}
 
 .todo-item-wrapper {
   display: flex;
   align-items: flex-start;
   width: 100%;
-  min-height: 60px;
+  min-height: 3.75rem;
   height: fit-content;
-  background-color: white;
-  border-bottom: 1px solid var(--compelted-text);
-  padding-right: 20px;
-  padding-block: 20px;
-  font-size: 18px;
+  background-color: var( --todo-item-bg);
+  border-bottom: 0.063rem solid var(--compelted-text);
+  border-radius: 0.313rem; 
+  padding-right: 1.25rem;
+  padding-block: 1.25rem;
+  border-radius: 0.313rem 0.313rem 0 0 ; 
+  font-size: 1.125rem;
   color: var(--text-main);
 }
 
-
-.todo-item-wrapper .circle:hover {
-  cursor: pointer;
+.divider {
+  width: 100%;
+  height: 0.063rem;
+  background-color: var(--compelted-text);
 }
 
-.todo-item-wrapper.first {
-  border-radius: 5px 5px 0 0;
+.divider.dragover {
+  height: 1.25rem;
+}
+
+.todo-item-wrapper .circle:hover {
+  border: 0.063rem solid hsl(192, 100%, 67%);
+  cursor: pointer;
 }
 
 .todo-item-wrapper.completed .circle {
@@ -175,12 +185,12 @@ main {
 
 .todo-item-text {
   flex: 1;
-  padding-top: 5px;
-  margin-right: 20px;
+  padding-top: 0.313rem;
+  margin-right: 1.25rem;
 }
 
 .todo-item-delete {
-  padding-top: 5px;
+  padding-top: 0.313rem;
   margin-left: auto;
 }
 
@@ -193,17 +203,17 @@ main {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 60px;
-  background-color: white;
+  height: 3.75rem;
+  background-color: var( --todo-item-bg);
   color: var(--text-secondary);
-  border-radius: 0 0 5px 5px;
-  padding-inline: 20px;
-  box-shadow: 0 30px 30px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 0.313rem 0.313rem;
+  padding-inline: 1.25rem;
+  box-shadow: 0 1.875rem 1.875rem 0 rgba(0, 0, 0, 0.1);
 }
 .todo-filter {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .filter-item {
@@ -221,15 +231,63 @@ main {
 
 .help {
   margin-bottom: 2vh;
+  color: var(--text-secondary);
 }
 
-.attribution {
-  position: relative;
-  bottom: 0;
+.attribution, .attribution a {
+  margin-top: auto;
+  color: var(--text-secondary);
+  text-align: center;
 }
 
-@media screen and (max-width: 1440px) {
+@media screen and (max-width: 90rem) {
   .bg-main {
     background-size: contain;
   }
 }
+
+@media screen and (max-width: 40.625rem) {
+  [data-theme='light'] {
+    --bg-url: url('/images/bg-mobile-light.jpg');
+  }
+  [data-theme='dark'] {
+    --bg-url: url('/images/bg-mobile-dark.jpg');
+  }
+  main {
+    padding: 1.25rem;
+  }
+  .bg-main {
+    background-size: cover;
+  }
+  .todo-app {
+    width: 100%;
+    margin-bottom: 15vh;
+  }
+
+  .todo-controls-wrapper {
+    position: relative;
+  }
+
+  .todo-filter {
+    position: absolute;
+    bottom: -12vh;
+    left: 0;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    background-color: var(--todo-item-bg);
+    width: 100%;
+    height: 100%;
+  }
+
+  .attribution, .attribution a {
+    font-size: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 26.875rem) {
+  .bg-main {
+    background-size: cover;
+  }
+ }

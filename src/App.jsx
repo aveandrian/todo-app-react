@@ -1,17 +1,31 @@
 
 import './App.css'
 import { useEffect, useState } from 'react'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { nanoid } from 'nanoid'
+import Task from './components/Task';
 
 function App() {
-  const [isLightTheme, setIsLightTheme] = useState(true)
+  const [isLightTheme, setIsLightTheme] = useState()
   const [newTodo, setNewTodo] = useState('')
   const [todoList, setTodoList] = useState([])
   const [activeFilter, setActiveFilter] = useState(null)
   const [leftCounter, setLeftCounter] = useState(null)
 
   useEffect(()=>{
+    let listFromCache = JSON.parse(window.localStorage.getItem('todoList'))
+    let themeFromCache = JSON.parse(window.localStorage.getItem('isLightTheme'))
+    setTodoList(listFromCache ? listFromCache : [])
+    setIsLightTheme(themeFromCache != null ? themeFromCache : true)
+  }, [])
+
+  useEffect(()=>{
+    window.localStorage.setItem('isLightTheme', isLightTheme)
+  },[isLightTheme])
+
+  useEffect(()=>{
     setLeftCounter(todoList.filter(item => item.isCompleted == false).length)
+    window.localStorage.setItem('todoList', JSON.stringify(todoList))
   }, [todoList])
 
   function handleSubmit(e){
@@ -43,10 +57,26 @@ function App() {
     setTodoList(prev => prev.map(item => item.id == id ? {...item, isCompleted: !item.isCompleted} : item))
   }
 
-
   function clearCompleted(){
     setTodoList(prev => prev.filter(item => item.isCompleted == false))
     setActiveFilter(null)
+  }
+
+  function handleDragEnd(result){
+    const {source, destination, draggableId } = result
+    if(!destination)
+      return
+    
+    if(destination.index === source.index)
+      return
+
+    let todoItem = todoList.filter(item => item.id == draggableId)[0]
+    let tempTodoList = todoList 
+
+    tempTodoList.splice(source.index, 1)
+    tempTodoList.splice(destination.index, 0, todoItem)
+
+    setTodoList([...tempTodoList])
   }
 
   return (
@@ -64,18 +94,23 @@ function App() {
             <input type='submit' className='new-todo-submit' onClick={handleSubmit} />
           </form>
         </section>
-        <section className='todo-list'>
-          {todoList.map((todoItem, i) => {
-            if(activeFilter == 'active' && todoItem.isCompleted == false || activeFilter == 'completed' && todoItem.isCompleted || activeFilter == null)
-              return (
-                  <div className={`todo-item-wrapper ${i == 0 ? "first" : ""} ${todoItem.isCompleted ? "completed" : ""}`} key={todoItem.id}>
-                    <div className='circle' onClick={()=>handleComplete(todoItem.id)}></div>
-                    <p className='todo-item-text'>{todoItem.text}</p>
-                    <img className='todo-item-delete' src='/images/icon-cross.svg' onClick={()=>hadleDelete(todoItem.id)}></img>
-                  </div>
-              )
-            })
-          }
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId='todoList'>
+            {(provided)=> (
+              <section className='todo-list' {...provided.droppableProps} ref={provided.innerRef}>
+                {todoList.map((todoItem, i) => {
+                  if(activeFilter == 'active' && todoItem.isCompleted == false || activeFilter == 'completed' && todoItem.isCompleted || activeFilter == null)
+                    return (
+                      <Task key={todoItem.id} {...todoItem} handleComplete={handleComplete} hadleDelete={hadleDelete} index={i}/>
+
+                    )
+                  })
+                }
+                {provided.placeholder}
+              </section>
+            )}
+          </Droppable>
+        </DragDropContext>
           {todoList.length > 0 && (
             <div className='todo-controls-wrapper'>
               <p className='todo-left'>{leftCounter} items left</p>
@@ -87,9 +122,8 @@ function App() {
               <p className='clear-completed' onClick={clearCompleted}>Clear completed</p>
             </div>
           )}
-        </section>
       </section>
-      <p className='help'>Drag and drop to reorder list</p>
+      {todoList.length > 0 && <p className='help'>Drag and drop to reorder list</p>}
 
       <section className="attribution">
         Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
